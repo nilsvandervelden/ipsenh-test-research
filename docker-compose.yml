@@ -1,0 +1,21 @@
+version: "3"
+services:
+  ipsenh-postgres-database:
+    container_name: ipsenh-postgres-database
+    image: postgres:13
+    restart: always
+    volumes:
+      - database:/var/lib/postgresql/data
+    ports:
+      - "0.0.0.0:5432:5432"
+    expose:
+      - "5432"
+    env_file:
+      - .env
+    networks:
+      - base
+networks:
+  base:
+
+volumes:
+  database:

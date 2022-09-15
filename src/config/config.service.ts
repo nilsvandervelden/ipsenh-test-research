@@ -34,37 +34,22 @@ class ConfigService {
 
   public getTypeOrmConfig(isRunningTests = false): TypeOrmModuleOptions {
     let defaultConfig = {
-      type: 'postgres',
-      name: 'default',
-      host: this.getValue('POSTGRES_HOST'),
-      port: parseInt(this.getValue('POSTGRES_PORT')),
-      username: this.getValue('POSTGRES_USER'),
-      password: this.getValue('POSTGRES_PASSWORD'),
-      database: this.getValue('POSTGRES_DB'),
-      entities: ['dist/**/*.entity{.ts,.js}'],
-      migrationsTableName: 'migration',
-      migrations: ['dist/migration/**/*{.ts,.js}'],
-      subscribers: [],
-      synchronize: false,
-      migrationsRun: false,
-      cli: {
-        migrationsDir: 'src/migration',
-      },
-      ssl: false,
-    };
-
-    const testConfig = {
-      entities: ['dist/**/*.entity{.ts,.js}', 'src/**/*.entity{.ts,.js}'],
-      migrations: [
-        'dist/migration/**/*{.ts,.js}',
-        'src/migration/**/*{.ts,.js}',
-      ],
-      synchronize: isRunningTests,
-      dropSchema: isRunningTests,
-    };
-
-    if (isRunningTests) {
-      defaultConfig = { ...defaultConfig, ...testConfig };
+        type: 'postgres',
+        name: 'default',
+        host: 'localhost',
+        port: '5432',
+        username: 'postgres',
+        password: 'password',
+        database: 'default',
+        entities: ['dist/**/*.entity{.ts,.js}'],
+        migrationsTableName: 'migration',
+        migrations: ['dist/migration/**/*{.ts,.js}'],
+        synchronize: false,
+        migrationsRun: false,
+        cli: {
+          migrationsDir: 'src/migration',
+        },
+        ssl: false,
     }
 
     return defaultConfig as TypeOrmModuleOptions;

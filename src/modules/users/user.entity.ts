@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column()

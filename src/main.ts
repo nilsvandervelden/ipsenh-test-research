@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-import { setupFastifyAdapter } from './config/fastify/setup-fastify-adapter';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ValidationPipe } from '@nestjs/common';
 import { configService } from './config/config.service';

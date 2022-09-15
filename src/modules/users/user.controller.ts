@@ -1,4 +1,4 @@
-import { Controller, NotFoundException, InternalServerErrorException } from "@nestjs/common";
+import { Controller, NotFoundException, InternalServerErrorException, Get } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { NoUsersFoundException } from "./exceptions/no-users-found-exception";
 
@@ -8,10 +8,12 @@ export class UserController {
     private readonly userService: UserService,
   ) {}
 
+  @Get()
   async getAllUsers() {
     try {
       return await this.userService.getAllUsers();
     } catch (exception) {
+      console.log(exception);
       if (exception instanceof NoUsersFoundException) {
         throw new NotFoundException('No users could be found');
       } else {

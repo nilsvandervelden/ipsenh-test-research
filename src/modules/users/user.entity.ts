@@ -14,16 +14,4 @@ export class UserEntity extends BaseEntity {
 
   @Column()
   email: string;
-
-  @Column()
-  password: string;
-
-  @BeforeInsert()
-  async hashPassword() {
-    if (this.password) {
-      this.password = await bcrypt.hash(this.password, 10);
-    } else {
-      this.password = '';
-    }
-  }
 }

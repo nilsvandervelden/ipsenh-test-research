@@ -2,76 +2,65 @@ import { INestApplication } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { TestingModule, Test } from '@nestjs/testing';
-import { UserDto } from 'src/modules/users/dtos/user-dto';
 import { UserService } from './user.service';
 import { UserEntity } from './user.entity';
 import { NoUsersFoundException } from './exceptions/no-users-found-exception';
+import { UserController } from './user.controller';
+import { UserDto } from './dtos/user-dto';
 
-describe('User module test', () => {
-  let app: INestApplication;
+describe('UserController', () => {
   let userService: UserService;
-  let userRepository: Repository<UserEntity>;
+  let userController: UserController;
 
   beforeAll(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    const app: TestingModule = await Test.createTestingModule({
       imports: [],
+      controllers: [UserController],
       providers: [
-        UserService,
         {
-          provide: getRepositoryToken(UserEntity),
-          useClass: Repository
+          provide: UserService,
+          useFactory: () => ({
+            getAllUsers: jest.fn(() => Promise.resolve(USERS))
+          })
         }
       ],
     }).compile();
 
-    userService = module.get<UserService>(UserService);
-    userRepository = module.get<Repository<UserEntity>>(getRepositoryToken(UserEntity));
+    userService = app.get<UserService>(UserService);
+    userController = app.get<UserController>(UserController);
+  });
+
+  describe("Api getAllUsers", () => {
+    it("it calling getAllUsers method", async () => {
+      const users: UserDto[] = await userController.getAllUsers();
+      expect(users).toBeDefined();
+      expect(users.length).toEqual(2);
+    })
+
+    it("if calling getAllUsers and receive a specific error", async () => {
+      jest.spyOn(userController, 'getAllUsers').mockImplementation(() => {
+        throw new NoUsersFoundException('No users could be found');
+      });
+      
+      try {
+        await userController.getAllUsers();
+      }
+      catch (err) {
+        expect(err).toBeDefined();
+        expect(err.message).toEqual("No users could be found");
+      }
+    });
   });
 
   const USERS: UserEntity[] = [
     {
-      "id": "3245dsfa",
+      "id": "a15b0f1e-fdb7-4b5f-afca-b644b3e8fcbf",
       "email": "test1@test.nl",
     } as UserEntity,
     {
-      "id": "3245dsfa",
+      "id": "16d13faf-3036-433e-842e-be55e25acc27",
       "email": "test2@test.nl",
     } as UserEntity,
   ]
 
-  it('Should be defined', () => {
-    expect(userService).toBeDefined();
-  });
-
-  describe("Method getAll users", () => {
-
-    it('it should return 2 users', async () => {
-      jest.spyOn(userRepository, 'find').mockResolvedValueOnce(USERS);
-      const result = await userService.getAllUsers();
-      expect(result.length).toEqual(2);
-    });
-
-    it('it must generate an error, findAll return an error', async () => {
-      jest.spyOn(userRepository, 'find').mockImplementation(() => { 
-        throw new NoUsersFoundException('No users could be found');
-      });
-      try {
-        await userService.getAllUsers();
-      }
-      catch (error) {
-        console.log(error)
-        expect(error.message).toContain("No users could be found");
-      }
-    });
-  });
-
-  // it('Should get a empty array of users', () => {
-  //   await request(app.getHttpServer())
-  //     .get('/users')
-  //     .expect(404);
-  // });
-
-  // afterAll(async () => {
-  //   await app.close();
-  // });
 });

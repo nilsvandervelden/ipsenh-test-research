@@ -8,11 +8,4 @@ export class CreateUserDto {
   })
   @IsEmail()
   email: string;
-
-  @ApiProperty({
-    required: true,
-    type: String,
-    description: 'Plain text password to to create the user with',
-  })
-  password: string;
 }

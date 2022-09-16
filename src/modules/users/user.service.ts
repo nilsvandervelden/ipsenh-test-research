@@ -4,6 +4,9 @@ import { Repository } from 'typeorm';
 import { UserEntity } from "./user.entity";
 import { UserDto } from './dtos/user-dto';
 import { NoUsersFoundException } from './exceptions/no-users-found-exception';
+import { EmailMustBeUniqueException } from './exceptions/email-must-be-unique-exception';
+import { CouldNotSaveUserException } from './exceptions/could-not-save-user-exception';
+import { CreateUserDto } from './dtos/create-user-dto';
 
 @Injectable()
 export class UserService {
@@ -20,6 +23,35 @@ export class UserService {
       throw new NoUsersFoundException('No users could be found');
     }
     return this.userEntitiesToUserDTO(users);
+  }
+  
+  async createUser(userDto: CreateUserDto): Promise<UserDto> {
+    const emailAlreadyExists = await this.userRepository.findOne({
+      where: {
+        email: userDto.email,
+      },
+    });
+
+    if(emailAlreadyExists) {
+      throw new EmailMustBeUniqueException("Email must be unique");
+    }
+
+    const userEntity = new UserEntity();
+    userEntity.email = userDto.email;
+
+    try {
+      await this.userRepository.save(userEntity);
+    } catch(exception) {
+      throw new CouldNotSaveUserException("Could not save user");
+    }
+
+    await this.userRepository.create(userDto);
+
+    //if there are no users return UserCouldNotBeFoundException
+    // if (users.length <= 0) {
+    //   throw new NoUsersFoundException('No users could be found');
+    // }
+    return userDto;
   }
 
   userEntitiesToUserDTO(userEntities: UserEntity[]): UserDto[] {

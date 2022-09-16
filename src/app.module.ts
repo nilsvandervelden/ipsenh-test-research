@@ -24,6 +24,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       },
       ssl: false,
     }), 
+    // UserModule
   ],
   controllers: [AppController],
   providers: [AppService],

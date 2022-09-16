@@ -1,77 +1,48 @@
-import request from 'supertest';
-import { INestApplication } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserEntity } from '../src/modules/users/user.entity';
-import { TestingModule, Test } from '@nestjs/testing';
-import { UserModule } from '../src/modules/users/user.module';
-import { AppModule } from '../src/app.module';
-import { configService } from '../src/config/config.service';
-import { UserService } from '../src/modules/users/user.service';
-import { UserController } from '../src/modules/users/user.controller';
-import { UserDto } from 'src/modules/users/dtos/user-dto';
+import { INestApplication } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { UserEntity } from "../src/modules/users/user.entity";
+import { UserModule } from "../src/modules/users/user.module";
+import { UserService } from "../src/modules/users/user.service";
+import { Repository } from "typeorm";
+import * as request from 'supertest'
 
-describe('User module test', () => {
-  let app: INestApplication;
+describe('UserController (e2e)', () => {
   let userService: UserService;
   let userRepository: Repository<UserEntity>;
+  let app: INestApplication;
 
   beforeAll(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [],
-      providers: [
-        UserService,
-        {
-          provide: getRepositoryToken(UserEntity),
-          useClass: Repository
-        }
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [
+        UserModule,
+        TypeOrmModule.forRoot({
+          type: 'postgres',
+          name: 'default',
+          host: 'localhost',
+          port: '5432',
+          username: 'postgres',
+          password: 'password',
+          database: 'default',
+          entities: [UserEntity],
+          synchronize: true,
+        }),
       ],
     }).compile();
 
-    userService = module.get<UserService>(UserService);
-    userRepository = module.get<Repository<UserEntity>>(getRepositoryToken(UserEntity));
+    app = moduleFixture.createNestApplication();
+    await app.init();
+    userRepository = moduleFixture.get(UserModule);
+    userService = new UserService(userRepository);
   });
 
-  const USERS: UserDto[] = [
-    {
-      "id": "3245dsfa",
-      "email": "test1@test.nl",
-    },
-    {
-      "id": "3245dsfa",
-      "email": "test2@test.nl",
-    },
-  ]
-
-  it('Should be defined', () => {
-    expect(userService).toBeDefined();
+  afterAll(async () => {
+    await app.close();
   });
 
-  describe("Method findAll", () => {
-    it('it should return 2 users', async () => {
-      jest.spyOn(userRepository, 'find').mockResolvedValueOnce(USERS);
-      const result = await userService.getAllUsers();
-      expect(result.length).toEqual(2);
-    });
-
-    // it('it must generate an error, findAll return an error', async () => {
-    //   jest.spyOn(inventoryItemsRepository, 'find').mockImplementation(() => { throw new Error('async error') });
-    //   try {
-    //     await service.findAll();
-    //   }
-    //   catch (err) {
-    //     expect(err.message).toContain("findAll error: async error");
-    //   }
-    // });
+  it('Should get a empty array of users', async () => {
+    await request(app.getHttpServer())
+      .get('/users')
+      .expect(404)
   });
-
-  // it('Should get a empty array of users', () => {
-  //   await request(app.getHttpServer())
-  //     .get('/users')
-  //     .expect(404);
-  // });
-
-  // afterAll(async () => {
-  //   await app.close();
-  // });
 });

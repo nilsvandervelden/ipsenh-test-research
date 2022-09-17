@@ -7,6 +7,7 @@ import { NoUsersFoundException } from './exceptions/no-users-found-exception';
 import { EmailMustBeUniqueException } from './exceptions/email-must-be-unique-exception';
 import { CouldNotSaveUserException } from './exceptions/could-not-save-user-exception';
 import { CreateUserDto } from './dtos/create-user-dto';
+import { CouldNotDeleteUserException } from './exceptions/could-not-delete-user-exception';
 
 @Injectable()
 export class UserService {
@@ -45,9 +46,37 @@ export class UserService {
       throw new CouldNotSaveUserException("Could not save user");
     }
     return this.userEntityToUserDTO(userEntity);
-    // const createdUserDto = this.userEntityToUserDTO(userEntity);
-    // delete(createdUserDto.id);
-    // return createdUserDto;
+  }
+
+  async findUserById(tenantId: string, id: number): Promise<UserDto> {
+    //looks for a user with given id
+    const userEntity = await this.userRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!userEntity) {
+      throw new NoUsersFoundException(
+        `Could not find a user with the id: ${id}`,
+      );
+    }
+    return this.userEntityToUserDTO(userEntity);
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    try {
+      const userToDelete = await this.userRepository.findOne({
+        where: {
+          id: id,
+        },
+      });
+      await this.userRepository.remove(userToDelete);
+    } catch (ignored) {
+      throw new CouldNotDeleteUserException(
+        `Could not delete the user with id: ${id}`,
+      );
+    }
   }
 
   userEntitiesToUserDTO(userEntities: UserEntity[]): UserDto[] {

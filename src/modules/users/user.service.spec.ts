@@ -58,7 +58,6 @@ describe('UserService', () => {
         await userService.getAllUsers();
       }
       catch (error) {
-        console.log(error)
         expect(error.message).toContain("No users could be found");
       }
     });

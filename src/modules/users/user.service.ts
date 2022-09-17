@@ -44,14 +44,7 @@ export class UserService {
     } catch(exception) {
       throw new CouldNotSaveUserException("Could not save user");
     }
-
-    await this.userRepository.create(userDto);
-
-    //if there are no users return UserCouldNotBeFoundException
-    // if (users.length <= 0) {
-    //   throw new NoUsersFoundException('No users could be found');
-    // }
-    return userDto;
+    return this.userEntityToUserDTO(userEntity);
   }
 
   userEntitiesToUserDTO(userEntities: UserEntity[]): UserDto[] {

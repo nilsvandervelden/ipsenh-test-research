@@ -35,13 +35,14 @@ describe('UserController (e2e)', () => {
     await app.init();
     userRepository = moduleFixture.get(UserModule);
     userService = new UserService(userRepository);
-    await getConnection().getRepository(UserEntity).clear(); // Get repository
+
+    //Clears the UserEntity table from the table to make sure we don't have any data remaining in the database when starting the tests.
+    await getConnection().getRepository(UserEntity).clear();
 
   });
 
   afterAll(async () => {
-    // await getConnection().getRepository(UserEntity).query(`TRUNCATE ${entity.tableName} RESTART IDENTITY CASCADE;`);
-    // await getConnection().getRepository(UserEntity).clear(); // Get repository
+    //Drops table after running all test to make sure we start with a new database when rerunning.
     await getConnection().dropDatabase();
     await app.close();
   });

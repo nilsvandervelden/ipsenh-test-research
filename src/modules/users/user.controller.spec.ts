@@ -88,7 +88,6 @@ describe('UserController', () => {
       await userController.createUser(createUserDto);
     }
     catch (err) {
-      console.log(err)
       expect(err).toBeDefined();
       expect(err.message).toEqual("Email must be unique");
     }

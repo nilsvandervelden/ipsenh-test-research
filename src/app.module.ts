@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './modules/users/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './modules/users/user.entity';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'postgres',
       password: 'password',
       database: 'default',
-      entities: ['dist/**/*.entity{.ts,.js}'],
+      entities: [UserEntity],
       migrationsTableName: 'migration',
       migrations: ['dist/migration/**/*{.ts,.js}'],
       synchronize: false,
@@ -24,7 +25,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       },
       ssl: false,
     }), 
-    // UserModule
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -27,11 +27,13 @@ export class UserController {
 
   @Post()
   async createUser(
-    @Body() crateUserDto: CreateUserDto,
+    @Body() createUserDto: CreateUserDto,
   ) {
     try {
-      return await this.userService.createUser(crateUserDto);
+      console.log(createUserDto);
+      return await this.userService.createUser(createUserDto);
     } catch (exception) {
+      console.log(exception);
       if (exception instanceof EmailMustBeUniqueException) {
         throw new ConflictException('Email is already taken');
       } else {

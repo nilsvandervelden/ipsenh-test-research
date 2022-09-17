@@ -1,12 +1,11 @@
-import { INestApplication } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { TestingModule, Test } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { UserEntity } from './user.entity';
 import { NoUsersFoundException } from './exceptions/no-users-found-exception';
 import { UserController } from './user.controller';
 import { UserDto } from './dtos/user-dto';
+import { CreateUserDto } from './dtos/create-user-dto';
+import { EmailMustBeUniqueException } from './exceptions/email-must-be-unique-exception';
 
 describe('UserController', () => {
   let userService: UserService;
@@ -31,7 +30,7 @@ describe('UserController', () => {
   });
 
   describe("Api getAllUsers", () => {
-    it("it calling getAllUsers method", async () => {
+    it("it calls the getAllUsers method", async () => {
       const users: UserDto[] = await userController.getAllUsers();
       expect(users).toBeDefined();
       expect(users.length).toEqual(2);
@@ -50,6 +49,39 @@ describe('UserController', () => {
         expect(err.message).toEqual("No users could be found");
       }
     });
+  });
+
+  describe("Api createUser", () => {
+    // it("it calls the createUser method", async () => {
+    //   const createUserDto: CreateUserDto = {
+    //     email: "test@test.nl"
+    //   }
+
+    //   const user: CreateUserDto = await userController.createUser(createUserDto);
+    //   expect(user).toBeDefined();
+    //   expect(user).toBeInstanceOf(CreateUserDto);
+    //   expect(user.email).toEqual("test@test.nl");
+    // })
+
+    // it("if calling createUser and receive a specific error", async () => {
+    //   jest.spyOn(userController, 'createUser').mockImplementation(() => {
+    //     throw new EmailMustBeUniqueException("Email must be unique");
+    //   });
+
+    //   const createUserDto: CreateUserDto = {
+    //     email: "test@test.nl"
+    //   }
+      
+    //   try {
+    //     // await userController.createUser(createUserDto);
+    //     // await userController.createUser(createUserDto);
+    //   }
+    //   catch (err) {
+    //     console.log(err)
+    //     expect(err).toBeDefined();
+    //     expect(err.message).toEqual("Email must be kekkie");
+    //   }
+    // });
   });
 
   const USERS: UserEntity[] = [

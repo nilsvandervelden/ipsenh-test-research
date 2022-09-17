@@ -5,7 +5,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {

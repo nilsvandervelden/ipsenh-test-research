@@ -30,10 +30,8 @@ export class UserController {
     @Body() createUserDto: CreateUserDto,
   ) {
     try {
-      console.log(createUserDto);
       return await this.userService.createUser(createUserDto);
     } catch (exception) {
-      console.log(exception);
       if (exception instanceof EmailMustBeUniqueException) {
         throw new ConflictException('Email is already taken');
       } else {

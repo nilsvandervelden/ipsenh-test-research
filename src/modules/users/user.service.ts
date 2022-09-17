@@ -45,6 +45,9 @@ export class UserService {
       throw new CouldNotSaveUserException("Could not save user");
     }
     return this.userEntityToUserDTO(userEntity);
+    // const createdUserDto = this.userEntityToUserDTO(userEntity);
+    // delete(createdUserDto.id);
+    // return createdUserDto;
   }
 
   userEntitiesToUserDTO(userEntities: UserEntity[]): UserDto[] {

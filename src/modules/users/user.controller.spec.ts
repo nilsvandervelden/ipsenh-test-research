@@ -19,9 +19,10 @@ describe('UserController', () => {
         {
           provide: UserService,
           useFactory: () => ({
-            getAllUsers: jest.fn(() => Promise.resolve(USERS))
+            getAllUsers: jest.fn(() => Promise.resolve(USERS)),
+            getUserById: jest.fn(() => Promise.resolve(USERS[0])),
           })
-        }
+        },
       ],
     }).compile();
 
@@ -51,37 +52,46 @@ describe('UserController', () => {
     });
   });
 
-  describe("Api createUser", () => {
-    // it("it calls the createUser method", async () => {
-    //   const createUserDto: CreateUserDto = {
-    //     email: "test@test.nl"
-    //   }
+  describe("Api getUsersById", () => {
+    it("it calls the getUserById method", async () => {
+      const user: UserDto = await userController.getUserById("a15b0f1e-fdb7-4b5f-afca-b644b3e8fcbf");
+      expect(user.email).toEqual("test1@test.nl")
+      expect(user.id).toEqual("a15b0f1e-fdb7-4b5f-afca-b644b3e8fcbf")
+      expect(user).toBeDefined();
+    })
 
-    //   const user: CreateUserDto = await userController.createUser(createUserDto);
-    //   expect(user).toBeDefined();
-    //   expect(user).toBeInstanceOf(CreateUserDto);
-    //   expect(user.email).toEqual("test@test.nl");
-    // })
-
-    // it("if calling createUser and receive a specific error", async () => {
-    //   jest.spyOn(userController, 'createUser').mockImplementation(() => {
-    //     throw new EmailMustBeUniqueException("Email must be unique");
-    //   });
-
-    //   const createUserDto: CreateUserDto = {
-    //     email: "test@test.nl"
-    //   }
+    it("if calling getAllUsers and receive a specific error", async () => {
+      jest.spyOn(userController, 'getUserById').mockImplementation(() => {
+        throw new NoUsersFoundException('No users could be found');
+      });
       
-    //   try {
-    //     // await userController.createUser(createUserDto);
-    //     // await userController.createUser(createUserDto);
-    //   }
-    //   catch (err) {
-    //     console.log(err)
-    //     expect(err).toBeDefined();
-    //     expect(err.message).toEqual("Email must be kekkie");
-    //   }
-    // });
+      try {
+        await userController.getAllUsers();
+      }
+      catch (err) {
+        expect(err).toBeDefined();
+        expect(err.message).toEqual("No users could be found");
+      }
+    });
+  });
+
+  it("if calling createUser and receive a specific error", async () => {
+    const createUserDto = {
+      email: "test@test.nl"
+    } as CreateUserDto;
+
+    jest.spyOn(userController, 'createUser').mockImplementation(() => {
+      throw new EmailMustBeUniqueException("Email must be unique");
+    });
+    
+    try {
+      await userController.createUser(createUserDto);
+    }
+    catch (err) {
+      console.log(err)
+      expect(err).toBeDefined();
+      expect(err.message).toEqual("Email must be unique");
+    }
   });
 
   const USERS: UserEntity[] = [
@@ -94,5 +104,4 @@ describe('UserController', () => {
       "email": "test2@test.nl",
     } as UserEntity,
   ]
-
 });

@@ -63,13 +63,23 @@ describe('UserService', () => {
     });
   });
 
-  // it('Should get a empty array of users', () => {
-  //   await request(app.getHttpServer())
-  //     .get('/users')
-  //     .expect(404);
-  // });
+  describe("Method getUserById users", () => {
+    it('it should return 1 user', async () => {
+      jest.spyOn(userRepository, 'findOne').mockResolvedValueOnce(USERS[0]);
+      const result = await userService.getUserById("a15b0f1e-fdb7-4b5f-afca-b644b3e8fcbf");
+      expect(result.email).toEqual("test1@test.nl");
+    });
 
-  // afterAll(async () => {
-  //   await app.close();
-  // });
+    it('it must generate an error, findAll return an error', async () => {
+      jest.spyOn(userRepository, 'findOne').mockImplementation(() => { 
+        throw new NoUsersFoundException('No users could be found');
+      });
+      try {
+        await userService.getUserById("a12b0f1e-fdb7-4b5f-afca-b644b3e8fcbf");
+      }
+      catch (error) {
+        expect(error.message).toContain("No users could be found");
+      }
+    });
+  });
 });

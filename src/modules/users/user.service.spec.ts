@@ -70,7 +70,7 @@ describe('UserService', () => {
       expect(result.email).toEqual("test1@test.nl");
     });
 
-    it('it must generate an error, findAll return an error', async () => {
+    it('it must generate an error, findOne return an error', async () => {
       jest.spyOn(userRepository, 'findOne').mockImplementation(() => { 
         throw new NoUsersFoundException('No users could be found');
       });

@@ -88,7 +88,62 @@ describe('UserController (e2e)', () => {
   it('should_returnAnArrayOfUsers_when_getAllUsersIsCalledWhileUsersExist', async () => {
     await request(app.getHttpServer())
       .get('/users')
-      .expect([ { id: 1, email: 'test@test.nl' } ])
+      .expect([ 
+        { 
+          id: 1,
+          email: 'test@test.nl' 
+        } 
+      ])
       .expect(200)
+  });
+
+  it('should_returnAnArrayOfUsers_when_getAllUsersIsCalledWhileUsersExist', async () => {
+    await request(app.getHttpServer())
+      .get('/users')
+      .expect([ 
+        { 
+          id: 1, 
+          email: 'test@test.nl' 
+        } 
+      ])
+      .expect(200)
+  });
+
+  it('should_returnTheUserBelongingToTheUserId_when_getUserByIdIsCalledWithAnExistUserId', async () => {
+    await request(app.getHttpServer())
+      .get('/users/1')
+      .expect({ 
+        id: 1, 
+        email: 'test@test.nl' 
+      })
+      .expect(200)
+  });
+
+  it('should_throwAUserCouldNotBeFoundException_when_getUserByIdIsCalledWithAUserIdThatDoesNotExist', async () => {
+    await request(app.getHttpServer())
+      .get('/users/2')
+      .expect({ 
+        statusCode: 404,
+        message: 'Could not find the user with that given id',
+        error: 'Not Found'
+      })
+      .expect(404)
+  });
+
+  it('should_deleteTheUserBelongingToTheUserId_when_deleteUserIsCalledWithAnExistUserId', async () => {
+    await request(app.getHttpServer())
+      .delete('/users/1')
+      .expect(200)
+  });
+
+  it('should_throwAUserCouldNotBeFoundException_when_deleteUserIsCalledWithAUserIdThatDoesNotExist', async () => {
+    await request(app.getHttpServer())
+    .delete('/users/1')
+      .expect({ 
+        statusCode: 404,
+        message: 'Could not find the user you are trying to delete',
+        error: 'Not Found'
+      })
+      .expect(404)
   });
 });

@@ -48,8 +48,7 @@ export class UserService {
     return this.userEntityToUserDTO(userEntity);
   }
 
-  async findUserById(tenantId: string, id: number): Promise<UserDto> {
-    //looks for a user with given id
+  async getUserById(id: string): Promise<UserDto> {
     const userEntity = await this.userRepository.findOne({
       where: {
         id: id,
@@ -64,7 +63,7 @@ export class UserService {
     return this.userEntityToUserDTO(userEntity);
   }
 
-  async deleteUser(id: number): Promise<void> {
+  async deleteUser(id: string): Promise<void> {
     try {
       const userToDelete = await this.userRepository.findOne({
         where: {

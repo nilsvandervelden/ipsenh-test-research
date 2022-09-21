@@ -2,9 +2,9 @@ import { INestApplication } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { TestingModule, Test } from '@nestjs/testing';
-import { UserService } from './user.service';
-import { UserEntity } from './user.entity';
-import { NoUsersFoundException } from './exceptions/no-users-found-exception';
+import { UserService } from '../users/user.service';
+import { UserEntity } from '../users/user.entity';
+import { NoUsersFoundException } from '../users/exceptions/no-users-found-exception';
 
 describe('UserService', () => {
   let app: INestApplication;

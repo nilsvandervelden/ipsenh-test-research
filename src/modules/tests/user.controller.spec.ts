@@ -1,11 +1,11 @@
 import { TestingModule, Test } from '@nestjs/testing';
-import { UserService } from './user.service';
-import { UserEntity } from './user.entity';
-import { NoUsersFoundException } from './exceptions/no-users-found-exception';
-import { UserController } from './user.controller';
-import { UserDto } from './dtos/user-dto';
-import { CreateUserDto } from './dtos/create-user-dto';
-import { EmailMustBeUniqueException } from './exceptions/email-must-be-unique-exception';
+import { UserService } from '../users/user.service';
+import { UserEntity } from '../users/user.entity';
+import { NoUsersFoundException } from '../users/exceptions/no-users-found-exception';
+import { UserController } from '../users/user.controller';
+import { UserDto } from '../users/dtos/user-dto';
+import { CreateUserDto } from '../users/dtos/create-user-dto';
+import { EmailMustBeUniqueException } from '../users/exceptions/email-must-be-unique-exception';
 
 describe('UserController', () => {
   let userService: UserService;

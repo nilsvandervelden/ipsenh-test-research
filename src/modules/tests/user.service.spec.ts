@@ -7,7 +7,6 @@ import { UserEntity } from '../users/user.entity';
 import { NoUsersFoundException } from '../users/exceptions/no-users-found-exception';
 
 describe('UserService', () => {
-  let app: INestApplication;
   let userService: UserService;
   let userRepository: Repository<UserEntity>;
 

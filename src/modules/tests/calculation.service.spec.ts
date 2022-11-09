@@ -27,6 +27,7 @@ describe('CalculationService', () => {
   afterAll(() => {
     const averageCPULoad = performanceService.getAverageCPULoad();
     const endTime = performance.now();
+    console.log('_____________Calculation.Service_____________ ');
     console.log('Test duration: ');
     console.log(endTime - startTime);
     console.log('Average cpu load: ');

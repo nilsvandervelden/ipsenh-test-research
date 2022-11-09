@@ -1,18 +1,28 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CalculationService } from "../calculations/calculation.service"
+import { PerformanceService } from '../../performance.service';
 
 describe('CalculationService', () => {
   let calculationService: CalculationService;
+  let performanceService: PerformanceService;
   const x = 1;
   const y = 2;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [],
-      providers: [CalculationService],
+      providers: [CalculationService, PerformanceService],
     }).compile();
 
+    performanceService = module.get<PerformanceService>(PerformanceService);
     calculationService = module.get<CalculationService>(CalculationService);
+
+    performanceService.startAverageCPULoadMeasurement();
+  });
+
+  afterAll(() => {
+    const averageCPULoad = performanceService.getAverageCPULoad();
+    console.log(averageCPULoad);
   });
 
   it('Should be defined', () => {

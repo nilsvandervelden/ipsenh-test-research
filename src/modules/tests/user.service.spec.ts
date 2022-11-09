@@ -5,15 +5,19 @@ import { TestingModule, Test } from '@nestjs/testing';
 import { UserService } from '../users/user.service';
 import { UserEntity } from '../users/user.entity';
 import { NoUsersFoundException } from '../users/exceptions/no-users-found-exception';
+import { PerformanceService } from '../../performance.service';
+import { CalculationService } from '../calculations/calculation.service';
 
 describe('UserService', () => {
   let userService: UserService;
   let userRepository: Repository<UserEntity>;
+  let performanceService: PerformanceService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [],
       providers: [
+        PerformanceService,
         UserService,
         {
           provide: getRepositoryToken(UserEntity),
@@ -24,7 +28,15 @@ describe('UserService', () => {
 
     userService = module.get<UserService>(UserService);
     userRepository = module.get<Repository<UserEntity>>(getRepositoryToken(UserEntity));
+    performanceService = module.get<PerformanceService>(PerformanceService);
+
+    performanceService.startAverageCPULoadMeasurement();
   });
+
+  afterAll(() => {
+    const averageCPULoad = performanceService.getAverageCPULoad();
+    console.log(averageCPULoad);
+  })
 
   const USERS: UserEntity[] = [
     {

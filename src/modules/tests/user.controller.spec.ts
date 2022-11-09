@@ -6,16 +6,20 @@ import { UserController } from '../users/user.controller';
 import { UserDto } from '../users/dtos/user-dto';
 import { CreateUserDto } from '../users/dtos/create-user-dto';
 import { EmailMustBeUniqueException } from '../users/exceptions/email-must-be-unique-exception';
+import { PerformanceService } from '../../performance.service';
+import { CalculationService } from '../calculations/calculation.service';
 
 describe('UserController', () => {
   let userService: UserService;
   let userController: UserController;
+  let performanceService: PerformanceService;
 
   beforeAll(async () => {
     const app: TestingModule = await Test.createTestingModule({
       imports: [],
       controllers: [UserController],
       providers: [
+        PerformanceService,
         {
           provide: UserService,
           useFactory: () => ({
@@ -28,6 +32,14 @@ describe('UserController', () => {
 
     userService = app.get<UserService>(UserService);
     userController = app.get<UserController>(UserController);
+    performanceService = app.get<PerformanceService>(PerformanceService);
+
+    performanceService.startAverageCPULoadMeasurement();
+  });
+
+  afterAll(() => {
+    const averageCPULoad = performanceService.getAverageCPULoad();
+    console.log(averageCPULoad);
   });
 
   describe("Api getAllUsers", () => {

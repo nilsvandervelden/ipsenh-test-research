@@ -7,8 +7,10 @@ import { UserEntity } from '../users/user.entity';
 import { NoUsersFoundException } from '../users/exceptions/no-users-found-exception';
 import { PerformanceService } from '../../performance.service';
 import { CalculationService } from '../calculations/calculation.service';
+import { performance } from 'perf_hooks';
 
 describe('UserService', () => {
+  let startTime;
   let userService: UserService;
   let userRepository: Repository<UserEntity>;
   let performanceService: PerformanceService;
@@ -31,10 +33,15 @@ describe('UserService', () => {
     performanceService = module.get<PerformanceService>(PerformanceService);
 
     performanceService.startAverageCPULoadMeasurement();
+    startTime = performance.now();
   });
 
   afterAll(() => {
     const averageCPULoad = performanceService.getAverageCPULoad();
+    const endTime = performance.now();
+    console.log('Test duration: ');
+    console.log(endTime - startTime);
+    console.log('Average cpu load: ');
     console.log(averageCPULoad);
   })
 

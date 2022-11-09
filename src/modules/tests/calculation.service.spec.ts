@@ -1,8 +1,10 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CalculationService } from "../calculations/calculation.service"
 import { PerformanceService } from '../../performance.service';
+import { performance } from 'perf_hooks';
 
 describe('CalculationService', () => {
+  let startTime;
   let calculationService: CalculationService;
   let performanceService: PerformanceService;
   const x = 1;
@@ -18,10 +20,16 @@ describe('CalculationService', () => {
     calculationService = module.get<CalculationService>(CalculationService);
 
     performanceService.startAverageCPULoadMeasurement();
+    startTime = performance.now();
+
   });
 
   afterAll(() => {
     const averageCPULoad = performanceService.getAverageCPULoad();
+    const endTime = performance.now();
+    console.log('Test duration: ');
+    console.log(endTime - startTime);
+    console.log('Average cpu load: ');
     console.log(averageCPULoad);
   });
 

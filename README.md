@@ -8,7 +8,18 @@
 $ npm install
 ```
 
-## 
+## Running the research
+```bash 
+# first off, make sure you have all software installed that you need to run this experiment (also take note of the software versions). 
+# installing the dependencies
+$ npm install
+# running the tests
+$ npm run test --verbose
+
+# the timing npm complete log is the time it took to run all tests, this time was used in the research for the total runtime of all tests.
+
+# above the timing npm complete log you see the total runtime of each test suite in milliseconds and the average percentage of cpu usage for running that specific test suite. These numbers where used for the individual runtime and CPU load for the test suites
+```
 
 ## Running the app
 
